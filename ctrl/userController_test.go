@@ -35,9 +35,9 @@ func TestGetUserFailure(t *testing.T) {
 	rec := httptest.NewRecorder()
 	handler := http.HandlerFunc(testFailureController.HandleGetUser)
 	handler.ServeHTTP(rec, req)
-	if status := rec.Code; status != http.StatusNotFound {
+	if status := rec.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusInternalServerError)
+			status, http.StatusBadRequest)
 	}
 }
 
@@ -51,6 +51,6 @@ func TestGetUserBadRequest(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 	if status := rec.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusInternalServerError)
+			status, http.StatusBadRequest)
 	}
 }

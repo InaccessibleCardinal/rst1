@@ -26,15 +26,9 @@ func NewUserController(service svc.BasicCrudService[models.User]) *UserControlle
 	return &UserController{service: service}
 }
 
-func sendResponse(w http.ResponseWriter, response any, statusCode int) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(response)
-}
-
 func (c *UserController) HandleGetUsers(w http.ResponseWriter, r *http.Request) {
 	usersResponse := c.service.FindAll()
-	sendResponse(w, usersResponse.Value, http.StatusOK)
+	SendResponse(w, usersResponse.Value, http.StatusOK)
 }
 
 func getIntId(id string) (int, error) {
@@ -61,7 +55,7 @@ func (c *UserController) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 	intId, err := getPathId(r)
 	if err != nil {
 		statusCode = http.StatusBadRequest
-		sendResponse(w, Response{Message: "Bad Request"}, statusCode)
+		SendResponse(w, Response{Message: "Bad Request"}, statusCode)
 	} else {
 		usersResponse := c.service.FindById(intId)
 		if usersResponse.Error != nil {
@@ -71,7 +65,7 @@ func (c *UserController) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 			statusCode = http.StatusOK
 			response = usersResponse.Value
 		}
-		sendResponse(w, response, statusCode)
+		SendResponse(w, response, statusCode)
 	}
 }
 
@@ -128,23 +122,23 @@ func (c *UserController) HandleUpdateUser(w http.ResponseWriter, r *http.Request
 	defer body.Close()
 	user, err := handleBody(body)
 	if err != nil {
-		sendResponse(w, Response{Message: err.Error()}, http.StatusBadRequest)
+		SendResponse(w, Response{Message: err.Error()}, http.StatusBadRequest)
 		return
 	}
 	doesUserExist := checkUserExists(user, c.service)
 	if !doesUserExist {
-		sendResponse(w, Response{Message: "User does not exist"}, http.StatusBadRequest)
+		SendResponse(w, Response{Message: "User does not exist"}, http.StatusBadRequest)
 		return
 	}
 	herr := hashUserPassword(user)
 	if herr != nil {
-		sendResponse(w, Response{Message: err.Error()}, http.StatusInternalServerError)
+		SendResponse(w, Response{Message: err.Error()}, http.StatusInternalServerError)
 		return
 	}
 	userResp := c.service.Update(user)
 	if !userResp.IsOk {
-		sendResponse(w, userResp.Error, http.StatusInternalServerError)
+		SendResponse(w, userResp.Error, http.StatusInternalServerError)
 		return
 	}
-	sendResponse(w, userResp.Value, http.StatusAccepted)
+	SendResponse(w, userResp.Value, http.StatusAccepted)
 }
