@@ -38,4 +38,5 @@ func InitRoutes(router *mux.Router) {
 	router.HandleFunc("/users/{id}", userController.HandleGetUser).Methods("GET")
 	router.HandleFunc("/users/{id}", userController.HandleUpdateUser).Methods("PUT")
 	router.HandleFunc("/address", ruController.HandleGetAddress).Methods("GET")
+	router.HandleFunc("/windows", ctrl.HandleWindows)
 }
