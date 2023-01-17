@@ -17,11 +17,14 @@ type RemoteService interface{}
 
 type RemoteUserService struct {
 	makeRequest ht.HtFunc
-	dbService   UserService
+	dbService   BasicCrudService[models.User]
 	cache       *cache.Cache
 }
 
-func NewRemoteUserService(makeRequest ht.HtFunc, service UserService, cache *cache.Cache) *RemoteUserService {
+func NewRemoteUserService(
+	makeRequest ht.HtFunc,
+	service BasicCrudService[models.User],
+	cache *cache.Cache) *RemoteUserService {
 	return &RemoteUserService{
 		makeRequest: makeRequest,
 		dbService:   service,
@@ -60,7 +63,7 @@ func (ru *RemoteUserService) getAddress(id int) ServiceResponse[*models.Address]
 		return ServiceResponse[*models.Address]{IsOk: false, Value: addr, Error: nil}
 	}
 
-	resp, err := ht.MakeHttpRequest("GET", remoteApi+strconv.Itoa(id), map[string]any{})
+	resp, err := ru.makeRequest("GET", remoteApi+strconv.Itoa(id), map[string]any{})
 	if err != nil {
 		return ServiceResponse[*models.Address]{IsOk: false, Value: nil, Error: err}
 	}

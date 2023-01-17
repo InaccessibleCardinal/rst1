@@ -8,8 +8,8 @@ type UserService struct {
 	repository models.UserRepository
 }
 
-func NewUserService(repository models.UserRepository) UserService {
-	return UserService{repository: repository}
+func NewUserService(repository models.UserRepository) *UserService {
+	return &UserService{repository: repository}
 }
 
 func (userService *UserService) FindAll() ServiceResponse[[]models.User] {

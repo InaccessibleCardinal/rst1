@@ -24,7 +24,7 @@ var (
 )
 
 func createUserController() *ctrl.UserController {
-	return ctrl.NewUserController(&userService)
+	return ctrl.NewUserController(userService)
 }
 
 func createRemoteUserController() *ctrl.RemoteUserController {
