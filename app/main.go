@@ -7,12 +7,9 @@ import (
 
 	"rst1/mw"
 	"rst1/route"
-	"rst1/xl"
 )
 
 func main() {
-	// xl.ReadXL()
-	xl.UnzipXL()
 	router := mux.NewRouter()
 	router.Use(mw.LoggingMiddleware)
 	route.InitRoutes(router)
